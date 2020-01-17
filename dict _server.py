@@ -26,6 +26,22 @@ def do_login(connfd,name,passwd):
         connfd.send(b'OK')
     else:
         connfd.send(b'FAIL')
+def do_query(connfd,name,word):#查询单词
+    db.insert_history(name,word)#插入历史记录
+    #data->mean/None
+    data=db.query(word)
+    if data:
+        msg="%s:%s"%(word,data)
+        connfd.send(msg.encode())
+    else:
+        connfd.send("没有该单词".encode())
+
+def do_history(connfd,name):
+    data=db.history(name)
+    if data:
+        connfd.send(str(data).encode())
+    else:
+        connfd.send("未查询到历史记录".encode())
 def handle(connfd):
     while True:
         request=connfd.recv(1024).decode()
@@ -36,6 +52,10 @@ def handle(connfd):
             do_register(connfd,tmp[1],tmp[2])
         elif tmp[0]=='L':
             do_login(connfd,tmp[1],tmp[2])
+        elif tmp[0]=='Q':
+            do_query(connfd,tmp[1],tmp[2])
+        elif tmp[0]=='H':
+            do_history(connfd,tmp[1])
 def main():
     #创建监听套接字
     s=socket()

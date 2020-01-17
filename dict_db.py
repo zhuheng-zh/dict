@@ -47,6 +47,34 @@ class Database:
             return True
         else:
             return False
+
+    def query(self,word):
+        sql="select mean from words where word=%s;"
+        self.cur.execute(sql,[word])
+        r= self.cur.fetchone()
+        #r->(xxxx),None
+        if r :
+            return r[0]
+    def insert_history(self,name,word):
+        sql="insert into hist2(name,word)values (%s,%s);"
+        try:
+            self.cur.execute(sql,[name,word])
+            self.db.commit()
+            return  True
+        except:
+            self.db.rollback()
+    def history(self,name):
+        sql="select name,word,time from hist2 where name=%s order by id desc limit 10; "
+        self.cur.execute(sql,[name])
+        r=self.cur.fetchall()
+        if r:
+            return r
+
+
+
+
+
+
 if __name__ == '__main__':
     db = Database()
     db.close()

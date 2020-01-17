@@ -36,12 +36,44 @@ def do_login():
         data = s.recv(128).decode()  # 接收反馈
         if data == 'OK':
             print("登录成功")
+            login_in(name)#调用二级界面
         else:
             print("登录失败")
-
+#查询单词
+def do_query(name):
+    while True:
+        word=input("Word:")
+        if word =='##':
+            break
+        msg='Q %s %s'%(name,word)
+        s.send(msg.encode())
+        #直接打印结果
+        data=s.recv(2048).decode()
+        print(data)
+def do_history(name):
+    msg='H %s'%(name)
+    s.send(msg.encode())
+    data=s.recv(2048).decode()
+    print(data)
+#登录后的界面
+def login_in(name):
+    while True:
+        print("""
+        ================Query============
+        1.查单词    2.历史记录    3.注销
+        =================================
+        """)
+        cmd=input("输入选项:")
+        if cmd=='1':
+            do_query(name)
+        elif cmd=='2':
+            do_history(name)
+        elif cmd=='3':
+            return
+        else:
+            print("请输入正确命令")
 #网络连接
 def main():
-
     while True:
         print("""
         ========Welcome=========
