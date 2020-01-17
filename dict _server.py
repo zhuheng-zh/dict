@@ -3,21 +3,37 @@ dict 服务端
 功能:请求逻辑处理
 并发模型：tcp 多进程并发
 """
-
+import  dict_db
 from socket import  *
 from  multiprocessing import  Process
-import  time
 import  sys
 import  signal
 #全局变量
 HOST='0.0.0.0'
 PORT=10086
 ADDR=(HOST,PORT)
+#创建数据库连接
+db=dict_db.Database()
+#处理注册
+def do_register(connfd,name,passwd):
+    if db.register(name,passwd):
+        connfd.send(b'OK')
+    else:
+        connfd.send(b'FAIL')
+#处理登录
+def do_login(connfd,name,passwd):
+    if db.login(name,passwd):
+        connfd.send(b'OK')
+    else:
+        connfd.send(b'FAIL')
 def handle(connfd):
     while True:
         request=connfd.recv(1024).decode()
-        print(request)
-        pass
+        tmp=request.split(' ')
+        if tmp[0]=='R':
+            do_register(connfd,tmp[1],tmp[2])
+        elif tmp[0]=='L':
+            do_login(connfd,tmp[1],tmp[2])
 def main():
     #创建监听套接字
     s=socket()
@@ -34,6 +50,7 @@ def main():
             print("Connect from ",addr)
         except KeyboardInterrupt:
             s.close()
+            db.close()
             sys.exit("退出服务端")
         except Exception as  e:
             print(e)

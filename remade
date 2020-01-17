@@ -36,8 +36,16 @@
 
     网络通信
     注册
+        客户端：请求 R  name,passwd
+
+        服务端：验证能否注册
+                插入数据库
+
     登录
     查单词
     历史记录
 
 
+cookie: import get.getpass
+        getpass.getpass()
+        功能：同input,但是隐藏密码
