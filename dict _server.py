@@ -30,7 +30,9 @@ def handle(connfd):
     while True:
         request=connfd.recv(1024).decode()
         tmp=request.split(' ')
-        if tmp[0]=='R':
+        if not request or tmp[0]=='E':
+            return
+        elif tmp[0]=='R':
             do_register(connfd,tmp[1],tmp[2])
         elif tmp[0]=='L':
             do_login(connfd,tmp[1],tmp[2])

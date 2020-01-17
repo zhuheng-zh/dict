@@ -1,5 +1,10 @@
 import pymysql
-
+import  hashlib
+#传入一个密码，返回加密后的密码
+def change_passwd(passwd):
+    hash = hashlib.md5()  # md5对象
+    hash.update(passwd.encode())  # 加密
+    return  hash.hexdigest()  # 获取加密后的密码
 class Database:
     def __init__(self):
         # 连接数据库
@@ -20,6 +25,7 @@ class Database:
 
     def register(self,name,passwd):
         sql="select name from user where name=%s;"
+        passwd=change_passwd(passwd)#密码加密
         self.cur.execute(sql,[name])
         #如果查到内容返回False
         if self.cur.fetchone():
@@ -35,6 +41,7 @@ class Database:
             return False
     def login(self,name,passwd):
         sql = "select name from user where name=%s and password=%s;"
+        passwd=change_passwd(passwd)
         self.cur.execute(sql,[name,passwd])
         if self.cur.fetchone():
             return True

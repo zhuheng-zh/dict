@@ -1,4 +1,5 @@
 """dict 客户端"""
+import  sys
 from socket import  *
 from getpass import getpass
 #服务器地址
@@ -52,6 +53,11 @@ def main():
             do_register()
         elif cmd=='2':
             do_login()
+        elif cmd=='3':
+            s.send(b'E')
+            sys.exit("谢谢使用")
+        else:
+            print("请输入正确命令")
 
 if __name__ == '__main__':
     main()
