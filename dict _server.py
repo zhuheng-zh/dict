@@ -26,6 +26,7 @@ def do_login(connfd,name,passwd):
         connfd.send(b'OK')
     else:
         connfd.send(b'FAIL')
+#处理查单词
 def do_query(connfd,name,word):#查询单词
     db.insert_history(name,word)#插入历史记录
     #data->mean/None
@@ -35,7 +36,7 @@ def do_query(connfd,name,word):#查询单词
         connfd.send(msg.encode())
     else:
         connfd.send("没有该单词".encode())
-
+#处理查历史记录
 def do_history(connfd,name):
     data=db.history(name)
     if data:

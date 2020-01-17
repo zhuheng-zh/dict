@@ -28,6 +28,7 @@ def do_register():
         else:
             print("注册失败")
             return
+#登录功能
 def do_login():
         name=input('User:')
         passwd=getpass('Passwd:')
@@ -50,6 +51,8 @@ def do_query(name):
         #直接打印结果
         data=s.recv(2048).decode()
         print(data)
+
+#查询历史记录
 def do_history(name):
     msg='H %s'%(name)
     s.send(msg.encode())
