@@ -54,10 +54,23 @@ def do_query(name):
 
 #查询历史记录
 def do_history(name):
-    msg='H %s'%(name)
-    s.send(msg.encode())
-    data=s.recv(2048).decode()
+    # msg='H %s'%(name)
+    # s.send(msg.encode())
+    # data=s.recv(2048).decode()
+    # print(data)
+    msg="H "+name
+    s.send(msg.encode())#发起请求
+    data=s.recv(128).decode()#是否有历史记录
     print(data)
+    if data=='OK':
+        while True:
+            data=s.recv(1024).decode()
+            if data=='##':
+                break
+            print(data)
+    else:
+        print("没有历史记录")
+
 #登录后的界面
 def login_in(name):
     while True:

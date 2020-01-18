@@ -64,13 +64,9 @@ class Database:
         except:
             self.db.rollback()
     def history(self,name):
-        sql="select name,word,time from hist2 where name=%s order by id desc limit 10; "
+        sql="select name,word,time from hist2 where name=%s order by time desc limit 10; "
         self.cur.execute(sql,[name])
-        r=self.cur.fetchall()
-        if r:
-            return r
-
-
+        return  self.cur.fetchall()
 
 
 

@@ -3,6 +3,7 @@ dict 服务端
 功能:请求逻辑处理
 并发模型：tcp 多进程并发
 """
+import time
 import  dict_db
 from socket import  *
 from  multiprocessing import  Process
@@ -36,13 +37,25 @@ def do_query(connfd,name,word):#查询单词
         connfd.send(msg.encode())
     else:
         connfd.send("没有该单词".encode())
-#处理查历史记录
+#查历史记录
 def do_history(connfd,name):
-    data=db.history(name)
-    if data:
-        connfd.send(str(data).encode())
+    # data=db.history(name)
+    # if data:
+    #     connfd.send(str(data).encode())
+    # else:
+    #     connfd.send("未查询到历史记录".encode())
+    result=db.history(name)#获取历史记录
+    if not result:
+        connfd.send(b'FAIL')
+        return
     else:
-        connfd.send("未查询到历史记录".encode())
+        connfd.send(b'OK')
+        for r in result:
+            time.sleep(0.1)
+            msg="%s  %s   \t%s"%r
+            connfd.send(msg.encode())
+        time.sleep(0.1)
+        connfd.send(b'##')
 def handle(connfd):
     while True:
         request=connfd.recv(1024).decode()
@@ -54,8 +67,10 @@ def handle(connfd):
         elif tmp[0]=='L':
             do_login(connfd,tmp[1],tmp[2])
         elif tmp[0]=='Q':
+            # Q name word
             do_query(connfd,tmp[1],tmp[2])
         elif tmp[0]=='H':
+            # H name
             do_history(connfd,tmp[1])
 def main():
     #创建监听套接字

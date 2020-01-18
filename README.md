@@ -44,6 +44,7 @@
     登录
     查单词
     历史记录
+        客户端： 发送请求  循环发送
 
 
 cookie: import get.getpass
